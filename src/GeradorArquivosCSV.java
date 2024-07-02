@@ -15,7 +15,7 @@ public class GeradorArquivosCSV {
             FileWriter writer = new FileWriter("clientes.csv");
             Random random = new Random();
             String[] cidades = {"RIO", "SAO", "FLN", "CNF", "PMW", "REC", "FOR", "POA", "SSA", "BEL"};
-            for (int i = 1; i <= 100; i++) {
+            for (int i = 1; i <= 10000; i++) {
                 String cidadeOrigem = cidades[random.nextInt(cidades.length)];
                 String cidadeDestino = cidadeOrigem;
                 while (cidadeDestino.equals(cidadeOrigem)) {
