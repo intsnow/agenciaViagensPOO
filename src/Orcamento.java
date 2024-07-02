@@ -19,6 +19,9 @@ public class Orcamento
         start();
     }
 
+    public void setValido(){
+        valido = true;
+    }
     public boolean getValido(){
         return valido;
     }

@@ -75,6 +75,10 @@ public class Cliente
         return saldo;
     }
 
+    public void setSaldo(double novoSaldo){
+        saldo = novoSaldo;
+    }
+
     public int getReqStars(){
         return reqStars;
     }

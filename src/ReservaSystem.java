@@ -4,7 +4,7 @@ import java.util.List;
 public class ReservaSystem
 {
     private List<Cliente> clientes;
-    private List<Cliente> clientesDistintos;
+    private List<String> clientesDistintos;
     private List<Hotel> hoteis;
     private List<Voo> voos;
 
@@ -23,30 +23,34 @@ public class ReservaSystem
         precoTotalClientes = precoTotalVoos = getPrecoTotalHoteis = 0;
     }
 
-    public void criaOrcamento(ReservaSystem rs, Cliente cli){
+    public void criaOrcamento(Cliente cli){
 
-        Orcamento orcm = new Orcamento(rs, cli);
+        Orcamento orcm = new Orcamento(this, cli);
         orcamentos.add(orcm);
     }
 
     public Orcamento getOrcamento(Cliente cli){
-        for ( Orcamento orcm: orcamentos){
+
+        List<Orcamento> aux = new ArrayList<>(orcamentos);
+
+        for ( Orcamento orcm: aux){
 
             if (cli.equals(orcm.getCliente()))
                 return orcm;
+
 
         }
 
         return null;
     }
 
-    public void avaliaOrcamento(Boolean bool, Orcamento orcamento){
+    public boolean avaliaOrcamento(Boolean bool, Orcamento orcamento){
 
         // Se orcamento é valido de registro
-        if (    orcamento.getValido() == true
+        if ( orcamento.getValido() == true
              && orcamento.getPrecoTotalOrcamento() <= orcamento.getCliente().getSaldo())
         {
-            //  Se cliente ACEITA orcamento
+            //  Se clienteb ACEITA orcamento
             if (bool.equals(Boolean.TRUE))
             {
                 System.out.println("\n\t\tOrcamento ACEITO!!");
@@ -74,12 +78,17 @@ public class ReservaSystem
                 //  Calcula valorTotal gasto pelo cliente ( voo(s) + hotel )
                 precoTotalClientes += precoTotalVoos + getPrecoTotalHoteis;
 
+                return true;
+
             }
 
-            else
+            else {
                 System.out.println("\n\t\tOrcamento NAO aceito...");
+
+            }
         }
 
+        return false;
     }
 
 
@@ -106,7 +115,7 @@ public class ReservaSystem
         return clientes;
     }
 
-    public List<Cliente> getClientesDistintos(){
+    public List<String> getClientesDistintos(){
         return  clientesDistintos;
     }
 

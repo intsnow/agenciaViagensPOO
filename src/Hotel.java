@@ -75,6 +75,20 @@ public class Hotel
         return info;
     }
 
+
+    public Boolean hotelValido(){
+        if (vagas > 0)
+        {
+            vagas--;
+            return true;
+        }
+        return false;
+    }
+
+    public void liberaReserva(){
+        vagas++;
+    }
+
     public void displayInfo()
     {
 

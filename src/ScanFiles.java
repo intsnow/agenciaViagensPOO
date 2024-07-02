@@ -21,6 +21,15 @@ public class ScanFiles
         scanVoo(voo);
     }
 
+
+    public ReservaSystem startReserva(){
+
+        ReservaSystem rs = new ReservaSystem(clientes, hoteis, voos);
+
+        return rs;
+    }
+
+
     public void scanCli(String cli) throws FileNotFoundException{
 
         File f = new File(cli);
@@ -67,13 +76,6 @@ public class ScanFiles
     }
 
 
-
-    public ReservaSystem startReserva(){
-
-        ReservaSystem rs = new ReservaSystem(clientes, hoteis, voos);
-
-        return rs;
-    }
 
 
 }

@@ -76,6 +76,21 @@ public class Voo
         return info;
     }
 
+    public boolean vooValido()
+    {
+        if (assentos > 0) {
+            assentos--;
+            return true;
+        }
+        return false;
+    }
+
+
+    public void liberaReserva(){
+        assentos++;
+    }
+
+
     public void displayInfo()
     {
 
