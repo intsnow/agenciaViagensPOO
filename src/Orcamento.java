@@ -20,8 +20,12 @@ public class Orcamento
     }
 
     public void setValido(){
-        valido = true;
+        if (cliente.getSaldo() >= precoTotalOrcamento)
+            valido = true;
+        else
+            valido = false;
     }
+
     public boolean getValido(){
         return valido;
     }
@@ -48,6 +52,7 @@ public class Orcamento
         buscaVoo();
         buscaHotel();
         setPrecoTotalOrcamento();
+        setValido();
     }
 
     public void buscaHotel()

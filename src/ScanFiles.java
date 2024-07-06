@@ -11,6 +11,11 @@ public class ScanFiles
     List<Hotel> hoteis;
     List<Voo> voos;
 
+    ReservaSystem rs;
+    public ScanFiles(){
+
+    }
+
     public ScanFiles(String cli, String hot, String voo) throws FileNotFoundException {
 
         clientes = new ArrayList<>();
@@ -19,14 +24,22 @@ public class ScanFiles
         scanCli(cli);
         scanHot(hot);
         scanVoo(voo);
+
+
     }
 
 
     public ReservaSystem startReserva(){
 
         ReservaSystem rs = new ReservaSystem(clientes, hoteis, voos);
-
+        this.rs = rs;
         return rs;
+    }
+
+    public ReservaSystem_Runnable startReserva_Runnable(){
+        ReservaSystem_Runnable rsRun = new ReservaSystem_Runnable(rs);
+
+        return rsRun;
     }
 
 

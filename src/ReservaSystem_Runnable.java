@@ -11,6 +11,8 @@ public class ReservaSystem_Runnable implements Runnable{
         private List<Voo> voos;
         private List<Hotel> hoteis;
         private List<String> nomesClientes_Dist;
+        private List<Orcamento> orcamentos, orcamentosValidos;
+
         private ReservaSystem rs;
 
         private int pedidosAtendidosLocal = 0;
@@ -20,11 +22,13 @@ public class ReservaSystem_Runnable implements Runnable{
 
         public ReservaSystem_Runnable(ReservaSystem rs)
         {
-            this.rs = rs;
             this.clientes = rs.getClientes();
             this.voos = rs.getVoos();
             this.hoteis = rs.getHoteis();
             this.nomesClientes_Dist = new ArrayList<>();
+            orcamentos = new ArrayList<>();
+            orcamentosValidos = new ArrayList<>();
+            this.rs = rs;
         }
 
 
@@ -37,20 +41,23 @@ public class ReservaSystem_Runnable implements Runnable{
                 //Orcamento orcamento = gerarOrcamento(cliente);
                 rs.criaOrcamento(cliente);
                 Orcamento orcamento = rs.getOrcamento(cliente);
+
                 boolean aceita = true;
                 boolean orcmValido = rs.avaliaOrcamento(aceita, orcamento);
 
-                if (orcamento != null && orcmValido == true)
+                if (orcamento != null)
                 {
-                    orcamento.setValido();
+                    orcamento.displayOrcamento();
 
                     if (nomesClientes_Dist.isEmpty() || !nomesClientes_Dist.contains(cliente.getNome()))
                         nomesClientes_Dist.add(cliente.getNome());
 
 
-
-                    if (cliente.getSaldo() >= orcamento.getPrecoTotalOrcamento())
+                    if (orcmValido)
                     {
+
+                        orcamentosValidos.add(orcamento);
+
                         Hotel hotel = orcamento.getHotel();
 
                         Voo voo1 = new Voo(), voo2 = new Voo();
@@ -78,26 +85,26 @@ public class ReservaSystem_Runnable implements Runnable{
                         if (vooValido.contains(true) )
                         {
 
-                            pedidosAtendidosLocal++;
+                            //pedidosAtendidosLocal++;
                             totalGastoClientesLocal += orcamento.getPrecoTotalOrcamento();
                             totalGastoHoteisLocal += orcamento.getPrecoTotalHotel();
                             totalGastoVoosLocal += orcamento.getPrecoTotalVoo();
                             cliente.setSaldo(cliente.getSaldo() - orcamento.getPrecoTotalOrcamento());
                         }
-                        else
-                        {
-                            if (voo1 != null){
-                                voo1.liberaReserva();
-
-                                if(voo2 != null)
-                                    voo2.liberaReserva();
-
-                            }
-
-                            if (hotelValido)
-                                hotel.liberaReserva();
-
-                        }
+//                        else
+//                        {
+//                            if (voo1 != null){
+//                                voo1.liberaReserva();
+//
+//                                if(voo2 != null)
+//                                    voo2.liberaReserva();
+//
+//                            }
+//
+//                            if (hotelValido)
+//                                hotel.liberaReserva();
+//
+//                        }
                     }
 
                 }
@@ -132,7 +139,8 @@ public class ReservaSystem_Runnable implements Runnable{
 //        }
 
         public int getPedidosAtendidosLocal() {
-            return pedidosAtendidosLocal;
+            //return contarOrcamentosValidos();
+            return orcamentosValidos.size();
         }
 
         public double getTotalGastoClientesLocal() {
@@ -147,6 +155,24 @@ public class ReservaSystem_Runnable implements Runnable{
             return totalGastoVoosLocal;
         }
 
+        public int contarOrcamentosValidos() {
+
+            int contador = 0;
+
+            for (Cliente cliente : clientes) {
+                rs.criaOrcamento(cliente);
+                Orcamento orcamento = rs.getOrcamento(cliente);
+                boolean aceita = true;
+                boolean orcmValido = rs.avaliaOrcamento(aceita, orcamento);
+
+                if (orcamento != null && orcmValido) {
+                    contador++;
+                    // Atualize os totais e saldos conforme necessário
+                }
+            }
+
+            return contador;
+        }
 
 
 }

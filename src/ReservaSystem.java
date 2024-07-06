@@ -10,6 +10,10 @@ public class ReservaSystem
 
     private List<Orcamento> orcamentos, orcamentosValidos;
 
+    private ScanFiles sc;
+
+
+
 
     private double precoTotalClientes, precoTotalVoos, getPrecoTotalHoteis;
 
@@ -21,12 +25,17 @@ public class ReservaSystem
         orcamentos = new ArrayList<>();
         orcamentosValidos = new ArrayList<>();
         precoTotalClientes = precoTotalVoos = getPrecoTotalHoteis = 0;
+        sc = new ScanFiles();
     }
 
     public void criaOrcamento(Cliente cli){
 
         Orcamento orcm = new Orcamento(this, cli);
         orcamentos.add(orcm);
+
+        if ( clientesDistintos.isEmpty() || !clientesDistintos.contains(cli.getNome()))
+            clientesDistintos.add(cli.getNome());
+
     }
 
     public Orcamento getOrcamento(Cliente cli){
@@ -45,6 +54,7 @@ public class ReservaSystem
     }
 
     public boolean avaliaOrcamento(Boolean bool, Orcamento orcamento){
+
 
         // Se orcamento é valido de registro
         if ( orcamento.getValido() == true
@@ -111,6 +121,7 @@ public class ReservaSystem
     }
 
 
+
     public List<Cliente> getClientes(){
         return clientes;
     }
@@ -144,6 +155,13 @@ public class ReservaSystem
     }
 
 
+    public ScanFiles getSc(){
+        return sc;
+    }
+
+    public void setSc(ScanFiles sc){
+        this.sc = sc;
+    }
 
 
 

@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class Main {
 
@@ -39,13 +41,11 @@ public class Main {
 
 
 
-
-        //  Reinicia ReservaSystem
-        //rs = scfiles.startReserva();
-
         startTime = System.currentTimeMillis();
 
         // Leitura sequencial:
+        //rs = null;
+        //rs = scfiles.startReserva();
         processaClientes_Paralelo(rs,"saida-paralela.csv");
 
         endTime = System.currentTimeMillis();
@@ -66,11 +66,21 @@ public class Main {
 
 
     public static void processaClientes_Paralelo(ReservaSystem rs, String nomeArq) {
+
+
+
         int totalPedidos = rs.getClientes().size();
-        int pedidosAtendidos = 0;
-        double totalGastoClientes = 0;
-        double totalGastoHoteis = 0;
-        double totalGastoVoos = 0;
+//        int pedidosAtendidos = 0;
+//        double totalGastoClientes = 0;
+//        double totalGastoHoteis = 0;
+//        double totalGastoVoos = 0;
+        List<String> clientesDistintos = rs.getClientesDistintos();
+
+        AtomicReference<Double> totalGastoClientes = new AtomicReference<>(0.0);
+        AtomicReference<Double> totalGastoHoteis = new AtomicReference<>(0.0);
+        AtomicReference<Double> totalGastoVoos = new AtomicReference<>(0.0);
+
+        AtomicInteger pedidosAtendidosTotal = new AtomicInteger(0);
 
         // Criar threads para processar os clientes
         ReservaSystem_Runnable runnable1 = new ReservaSystem_Runnable(rs);
@@ -93,31 +103,85 @@ public class Main {
             e.printStackTrace();
         }
 
-        // Coletar resultados das threads
-        pedidosAtendidos += runnable1.getPedidosAtendidosLocal();
-        pedidosAtendidos += runnable2.getPedidosAtendidosLocal();
-        pedidosAtendidos += runnable3.getPedidosAtendidosLocal();
-        totalGastoClientes += runnable1.getTotalGastoClientesLocal();
-        totalGastoClientes += runnable2.getTotalGastoClientesLocal();
-        totalGastoClientes += runnable3.getTotalGastoClientesLocal();
-        totalGastoHoteis += runnable1.getTotalGastoHoteisLocal();
-        totalGastoHoteis += runnable2.getTotalGastoHoteisLocal();
-        totalGastoHoteis += runnable3.getTotalGastoHoteisLocal();
-        totalGastoVoos += runnable1.getTotalGastoVoosLocal();
-        totalGastoVoos += runnable2.getTotalGastoVoosLocal();
-        totalGastoVoos += runnable3.getTotalGastoVoosLocal();
+        List<Cliente> cli= new ArrayList<>();
 
-        List<String> clientesDistintos = rs.getClientesDistintos();
+
+        Set<Integer> pedidosUnicos = new HashSet<>();
+
+        // Restante do código...
+
+        // Coletar resultados das threads
+        adicionarPedidosUnicos(pedidosUnicos, runnable1.getPedidosAtendidosLocal());
+        adicionarPedidosUnicos(pedidosUnicos, runnable2.getPedidosAtendidosLocal());
+        adicionarPedidosUnicos(pedidosUnicos, runnable3.getPedidosAtendidosLocal());
+
+        int numPedidos = pedidosUnicos.size(); // Número total de pedidos únicos
+
+//        pedidosAtendidosTotal.updateAndGet(total -> total + runnable1.getPedidosAtendidosLocal());
+//        pedidosAtendidosTotal.updateAndGet(total -> total + runnable2.getPedidosAtendidosLocal());
+//        pedidosAtendidosTotal.updateAndGet(total -> total + runnable3.getPedidosAtendidosLocal());
+//        int numPedidos = pedidosAtendidosTotal.get(); // Número total de pedidos únicos
+
+
+
+
+        somarValoresDistintos(totalGastoClientes, runnable1.getTotalGastoClientesLocal());
+        somarValoresDistintos(totalGastoClientes, runnable2.getTotalGastoClientesLocal());
+        somarValoresDistintos(totalGastoClientes, runnable3.getTotalGastoClientesLocal());
+
+        somarValoresDistintos(totalGastoHoteis, runnable1.getTotalGastoHoteisLocal());
+        somarValoresDistintos(totalGastoHoteis, runnable2.getTotalGastoHoteisLocal());
+        somarValoresDistintos(totalGastoHoteis, runnable3.getTotalGastoHoteisLocal());
+
+        somarValoresDistintos(totalGastoVoos, runnable1.getTotalGastoVoosLocal());
+        somarValoresDistintos(totalGastoVoos, runnable2.getTotalGastoVoosLocal());
+        somarValoresDistintos(totalGastoVoos, runnable3.getTotalGastoVoosLocal());
+
+
+//        totalGastoClientes.updateAndGet(value -> value + runnable1.getTotalGastoClientesLocal());
+//        totalGastoClientes.updateAndGet(value -> value + runnable2.getTotalGastoClientesLocal());
+//        totalGastoClientes.updateAndGet(value -> value + runnable3.getTotalGastoClientesLocal());
+//
+//        totalGastoHoteis.updateAndGet(value -> value + runnable1.getTotalGastoHoteisLocal());
+//        totalGastoHoteis.updateAndGet(value -> value + runnable2.getTotalGastoHoteisLocal());
+//        totalGastoHoteis.updateAndGet(value -> value + runnable3.getTotalGastoHoteisLocal());
+//
+//        totalGastoVoos.updateAndGet(value -> value + runnable1.getTotalGastoVoosLocal());
+//        totalGastoVoos.updateAndGet(value -> value + runnable2.getTotalGastoVoosLocal());
+//        totalGastoVoos.updateAndGet(value -> value + runnable3.getTotalGastoVoosLocal());
+
+
+
+
+
+//        // Coletar resultados das threads
+//        int pedidosAtendidos1 = runnable1.getPedidosAtendidosLocal();
+//        int pedidosAtendidos2 = runnable2.getPedidosAtendidosLocal();
+//        int pedidosAtendidos3 = runnable3.getPedidosAtendidosLocal();
+//
+//        int numPedidos = Math.min(Math.min(pedidosAtendidos1,pedidosAtendidos2), pedidosAtendidos3);
+//
+//        totalGastoClientes += runnable1.getTotalGastoClientesLocal();
+//        totalGastoClientes += runnable2.getTotalGastoClientesLocal();
+//        totalGastoClientes += runnable3.getTotalGastoClientesLocal();
+//        totalGastoHoteis += runnable1.getTotalGastoHoteisLocal();
+//        totalGastoHoteis += runnable2.getTotalGastoHoteisLocal();
+//        totalGastoHoteis += runnable3.getTotalGastoHoteisLocal();
+//        totalGastoVoos += runnable1.getTotalGastoVoosLocal();
+//        totalGastoVoos += runnable2.getTotalGastoVoosLocal();
+//        totalGastoVoos += runnable3.getTotalGastoVoosLocal();
+
+
 
         // Escrever no arquivo de saída
         try (FileWriter writer = new FileWriter(nomeArq)) {
             writer.append(String.format("%d;%d;%d;%.2f;%.2f;%.2f\n",
                     totalPedidos,
                     clientesDistintos.size(),
-                    pedidosAtendidos,
-                    totalGastoClientes,
-                    totalGastoHoteis,
-                    totalGastoVoos));
+                    numPedidos,//pedidosAtendidosTotal.get(),
+                    totalGastoClientes.get(),
+                    totalGastoHoteis.get(),
+                    totalGastoVoos.get()));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -139,7 +203,7 @@ public class Main {
             rs.criaOrcamento(cli);
             Orcamento orcm = rs.getOrcamento(cli);
 
-            orcm.displayOrcamento();
+            //orcm.displayOrcamento();
 
             //  Avaliação de cada cliente, aleatoriamente cada um aceitando ou não
             Random rand = new Random();
@@ -160,7 +224,7 @@ public class Main {
         }
 
         //  Por fim, copia a lista auxiliar à lista de Clientes Distintos
-        rs.getClientesDistintos().addAll(auxCli);
+        //rs.getClientesDistintos().addAll(auxCli);
 
 
         // Escrever no arquivo de saída
@@ -191,7 +255,15 @@ public class Main {
 
     }
 
+    private static void adicionarPedidosUnicos(Set<Integer> pedidosUnicos, int pedidosThread) {
+        for (int i = 0; i < pedidosThread; i++) {
+            pedidosUnicos.add(i);
+        }
+    }
 
+    private static void somarValoresDistintos(AtomicReference<Double> total, double valor ) {
+        total.updateAndGet(current -> current + valor);
+    }
 
 
 }
