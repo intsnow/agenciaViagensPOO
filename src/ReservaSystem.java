@@ -10,8 +10,6 @@ public class ReservaSystem
 
     private List<Orcamento> orcamentos, orcamentosValidos;
 
-    private ScanFiles sc;
-
 
 
 
@@ -25,7 +23,6 @@ public class ReservaSystem
         orcamentos = new ArrayList<>();
         orcamentosValidos = new ArrayList<>();
         precoTotalClientes = precoTotalVoos = getPrecoTotalHoteis = 0;
-        sc = new ScanFiles();
     }
 
     public void criaOrcamento(Cliente cli){
@@ -35,6 +32,7 @@ public class ReservaSystem
 
         if ( clientesDistintos.isEmpty() || !clientesDistintos.contains(cli.getNome()))
             clientesDistintos.add(cli.getNome());
+
 
     }
 
@@ -57,46 +55,45 @@ public class ReservaSystem
 
 
         // Se orcamento é valido de registro
-        if ( orcamento.getValido() == true
-             && orcamento.getPrecoTotalOrcamento() <= orcamento.getCliente().getSaldo())
+        if ( orcamento.getPrecoTotalOrcamento() <= orcamento.getCliente().getSaldo())
         {
-            //  Se clienteb ACEITA orcamento
-            if (bool.equals(Boolean.TRUE))
-            {
-                System.out.println("\n\t\tOrcamento ACEITO!!");
 
-                //  Adiciona orcamento aos validos
-                orcamentosValidos.add(orcamento);
+            //System.out.println("\n\t\tOrcamento ACEITO!!");
 
-                //  Subtrai numero de vagas do(s) voo(s) escolhido(s)
+            //  Adiciona orcamento aos validos
+            orcamentosValidos.add(orcamento);
 
-                orcamento.getVoo1().subtrAssentos();
+            //  Subtrai numero de vagas do(s) voo(s) escolhido(s)
 
-                if (orcamento.getVoo2() != null)
-                    orcamento.getVoo2().subtrAssentos();
+            orcamento.getVoo1().subtrAssentos();
 
-                //  Subtrai numero de vagas do Hotel escolhido
-                if (orcamento.getHotel() != null)
-                    orcamento.getHotel().subtrVagas();
+            if (orcamento.getVoo2() != null)
+                orcamento.getVoo2().subtrAssentos();
 
-                //  Calcula precoVoo gasto do orcamento
-                precoTotalVoos += orcamento.getPrecoTotalVoo();
+            //  Subtrai numero de vagas do Hotel escolhido
+            if (orcamento.getHotel() != null)
+                orcamento.getHotel().subtrVagas();
 
-                //  Calcula precoHotel gasto do orcamento
-                getPrecoTotalHoteis += orcamento.getPrecoTotalHotel();
+            //  Calcula precoVoo gasto do orcamento
+            precoTotalVoos += orcamento.getPrecoTotalVoo();
 
-                //  Calcula valorTotal gasto pelo cliente ( voo(s) + hotel )
-                precoTotalClientes += precoTotalVoos + getPrecoTotalHoteis;
+            //  Calcula precoHotel gasto do orcamento
+            getPrecoTotalHoteis += orcamento.getPrecoTotalHotel();
 
-                return true;
+            //  Calcula valorTotal gasto pelo cliente ( voo(s) + hotel )
+            precoTotalClientes += orcamento.getPrecoTotalVoo() + orcamento.getPrecoTotalHotel();
 
-            }
+            double novoSaldo = orcamento.getCliente().getSaldo() - orcamento.getPrecoTotalOrcamento();
+            orcamento.getCliente().setSaldo(novoSaldo);
 
-            else {
-                System.out.println("\n\t\tOrcamento NAO aceito...");
+            return true;
 
-            }
+
         }
+        else
+            //System.out.println("\n\t\tOrcamento NAO aceito...");
+
+
 
         return false;
     }
@@ -152,15 +149,6 @@ public class ReservaSystem
 
     public double getPrecoTotalHoteis(){
         return getPrecoTotalHoteis;
-    }
-
-
-    public ScanFiles getSc(){
-        return sc;
-    }
-
-    public void setSc(ScanFiles sc){
-        this.sc = sc;
     }
 
 

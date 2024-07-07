@@ -5,7 +5,7 @@ public class Orcamento
     private Cliente cliente;
     private Hotel hotel;
     private Voo voo1, voo2;
-    private List<Voo> voos1, voos1Final, voos2;
+    private List<Voo> voos1, voos1Final, voos2, voosFinais;
 
     private double precoTotalOrcamento, precoTotalVoo, precoTotalHotel;
     private boolean valido;
@@ -40,6 +40,10 @@ public class Orcamento
 
     public Voo getVoo2(){
         return voo2;
+    }
+
+    public List<Voo> getVoosFinais(){
+        return voosFinais;
     }
 
     public Hotel getHotel(){
@@ -266,6 +270,9 @@ public class Orcamento
                     //  Por fim, atribui cada voo das duplas em voo1 e voo2
                     voo1 = voosFinal.get(0);
                     voo2 = voosFinal.get(1);
+
+                    voosFinal.add(voo1);
+                    voosFinal.add(voo2);
 
                 }
 

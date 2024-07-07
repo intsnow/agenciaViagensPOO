@@ -12,10 +12,10 @@ public class GeradorArquivosCSV {
 
     public static void gerarClientesCSV() {
         try {
-            FileWriter writer = new FileWriter("clientes_1000.csv");
+            FileWriter writer = new FileWriter("clientes_100.csv");
             Random random = new Random();
             String[] cidades = {"RIO", "SAO", "FLN", "CNF", "PMW", "REC", "FOR", "POA", "SSA", "BEL"};
-            for (int i = 1; i <= 1000; i++) {
+            for (int i = 1; i <= 100; i++) {
                 String cidadeOrigem = cidades[random.nextInt(cidades.length)];
                 String cidadeDestino = cidadeOrigem;
                 while (cidadeDestino.equals(cidadeOrigem)) {

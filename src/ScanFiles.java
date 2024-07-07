@@ -12,9 +12,6 @@ public class ScanFiles
     List<Voo> voos;
 
     ReservaSystem rs;
-    public ScanFiles(){
-
-    }
 
     public ScanFiles(String cli, String hot, String voo) throws FileNotFoundException {
 
@@ -36,11 +33,6 @@ public class ScanFiles
         return rs;
     }
 
-    public ReservaSystem_Runnable startReserva_Runnable(){
-        ReservaSystem_Runnable rsRun = new ReservaSystem_Runnable(rs);
-
-        return rsRun;
-    }
 
 
     public void scanCli(String cli) throws FileNotFoundException{
