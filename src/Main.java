@@ -11,6 +11,7 @@ public class Main {
     public static void main(String[] args) throws FileNotFoundException {
 
         //  Escaneando/lendo arquivos
+        // !!! PARA COMPILAR CORRETAMENTE COPIE E COLE O CAMINHO CORRETO DOS ARQUIVOS (DA SUA MÁQUINA) LOGO ABAIXO !!!
         String  n1 = "C:\\Users\\mundo\\Documents\\GitHub\\agenciaViagens\\src\\clientes_10000.csv",
                 n2 = "C:\\Users\\mundo\\Documents\\GitHub\\agenciaViagens\\src\\hoteis.csv",
                 n3 = "C:\\Users\\mundo\\Documents\\GitHub\\agenciaViagens\\src\\voos.csv";
